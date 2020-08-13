@@ -1,28 +1,60 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Lovely Vue</h1>
+    <input v-model='message' />
+    <button :disabled='isDisabled' @click='add'>追加</button>
+    <br />
+    <template v-if='todos.length === 0'>
+      ありません
+    </template>
+    <template v-else>
+      <ul>
+        <TaskCard
+        v-for="todo in todos"
+        :id='todo.id'
+        :key="todo.id"
+        :text="todo.text"
+        @remove-task='remove'
+        />
+      </ul>
+      <p>{{ message }}</p>
+    </template>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TaskCard from '@/components/TaskCard.vue';
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    TaskCard
+  },
+  data: () => ({
+    todos: [
+      {id: 1, text: 'ときめき'}
+    ],
+    message: 'Spark joy!'
+  }),
+  computed: {
+    isDisabled() {
+      return this.message.length === 0;
+    }
+  },
+  methods: {
+    add() {
+      const newTodo = {
+        id: this.todos.length + 1,
+        text: this.message
+      };
+      this.todos.push(newTodo);
+      this.message = '';
+    },
+    remove(id) {
+      this.todos = this.todos.filter(todo => todo.id !== id);
+    }
   }
-}
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
